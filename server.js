@@ -29,9 +29,7 @@ let strategy = new JwtStrategy(jwtOptions, function (jwt_payload, next) {
         // passport.authenticate have a req.user._id, req.user.userName  values 
         // that matches the request payload data
         next(null, { _id: jwt_payload._id, 
-            userName: jwt_payload.userName,
-            favourites: jwt_payload.favourites,
-            history: jwt_payload.history
+            userName: jwt_payload.userName
         }); 
     } else {
         next(null, false);
@@ -62,16 +60,14 @@ app.post("/api/user/login", (req, res) => {
 
         let payload = {
             _id: user._id,
-            userName: user.userName,
-            favourites: user.favourites,
-            history: user.history
+            userName: user.userName
         };
 
         let token = jwt.sign(payload, jwtOptions.secretOrKey);
 
         res.json({ "message": "login successful"});
     }).catch(msg => {
-        res.status(422).json({ "message": msg });
+        res.status(422).json({ "message": msg, token: token });
     });
 });
 
